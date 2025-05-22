@@ -7,6 +7,7 @@ from extract import extract_markdown_images
 from split_img_link import split_nodes_image, split_nodes_link
 from main import text_to_textnodes
 from markdown_to_blocks import markdown_to_blocks
+from blocktypes import block_to_block_type, BlockType
 
 class TestTextNode(unittest.TestCase):
     def test_tag_value(self):
@@ -221,5 +222,56 @@ This is the same paragraph on a new line
             ],
         )    
 
+    def test_block_paragraph(self):
+        block = block_to_block_type("This is a paragraph")
+        self.assertEqual(block, BlockType.PARAGRAPH)
+    
+    def test_block_heading1(self):
+        block = block_to_block_type("# This is a heading")
+        self.assertEqual(block, BlockType.HEADING)
+
+    def test_block_heading2(self):
+        block = block_to_block_type("## This is a heading")
+        self.assertEqual(block, BlockType.HEADING)
+
+    def test_block_code(self):
+        block = block_to_block_type("```This is code```")
+        self.assertEqual(block, BlockType.CODE)
+
+    def test_block_quote1(self):
+        block = block_to_block_type("> This is a quote")
+        self.assertEqual(block, BlockType.QUOTE)
+    
+    def test_block_quote2(self):
+        block = block_to_block_type("""
+> This is a quote
+> This is also a quote""")
+        self.assertEqual(block, BlockType.QUOTE)
+
+    
+    def test_block_ul1(self):
+        block = block_to_block_type("- This is an unorderd list")
+        self.assertEqual(block, BlockType.UNORDERD_LIST)
+    
+    def test_block_ul2(self):
+        block = block_to_block_type("""
+- This is an unorderd list
+- This is also an unorderd list""")
+        self.assertEqual(block, BlockType.UNORDERD_LIST)
+    
+    def test_block_ol1(self):
+        block = block_to_block_type("1. This is an orderd list")
+        self.assertEqual(block, BlockType.ORDERD_LIST)
+    
+    def test_block_ol2(self):
+        block = block_to_block_type("""
+1. This is an orderd list
+2. This is also an orderd list
+3. This is also an orderd list
+""")
+        self.assertEqual(block, BlockType.ORDERD_LIST)
+
+            
+                 
 if __name__ == "__main__":
     unittest.main()
